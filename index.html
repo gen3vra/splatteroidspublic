@@ -103,6 +103,14 @@
             document.getElementById("enemyShips").innerHTML = "Enemy Ships Destroyed: " + visualEnemyShips;
             document.getElementById("deaths").innerHTML = "Deaths: " + visualDeaths;
         }
+        if (navigator.userAgent.match(/Android/i) ||
+            navigator.userAgent.match(/webOS/i) ||
+            navigator.userAgent.match(/iPhone/i) ||
+            navigator.userAgent.match(/iPod/i)
+        ) {
+            isMobile = true;
+            document.getElementById("mobileWarning").style.display = "block";
+        }
     </script>
 </body>
 
