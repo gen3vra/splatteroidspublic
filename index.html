@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Splatteroids 11.30.2023 Gen 🌹</title>
+    <link rel="stylesheet" href="css/style.css">
+    <meta name="viewport" content="width=640, initial-scale=1.0">
+
+    <style>
+        * {
+            margin: 0;
+        }
+
+        canvas {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: #000;
+        }
+
+        #info {
+            color: #FFF;
+            font-family: "Lucida Sans Typewriter", "Lucida Console", Monaco, "Bitstream Vera Sans Mono", monospace;
+            margin: 10px 10px 0;
+            padding: 8px;
+            background: #161616;
+            position: absolute;
+            z-index: 1;
+        }
+
+        #info h1 {
+            font-size: 18px;
+        }
+
+        #info h2 {
+            font-size: 14px;
+        }
+
+        #info p {
+            font-size: 11px;
+        }
+
+        .mobileWarning {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #FFF;
+            font-family: "Lucida Sans Typewriter", "Lucida Console", Monaco, "Bitstream Vera Sans Mono", monospace;
+            margin: 10px 10px 0;
+            padding: 8px;
+            background: #161616;
+            z-index: 1;
+            font-size: 2rem;
+        }
+
+        #rocks {
+            color: #f79588;
+        }
+
+        #enemyShips {
+            color: #8896f7;
+        }
+
+        #deaths {
+            color: #f1b8f2;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="info">
+        <h1>Splatteroids</h1>
+        <p>Use [A][S][W][D] or [&larr;][&uarr;][&darr;][&rarr;] to MOVE</p>
+        <p>Use [SPACE] or [K] to SHOOT</p>
+        <p>[SHIFT] to do everything faster</p>
+        <h2>Your Session Stats</h2>
+        <p id="rocks">Rocks: 0
+        </p>
+        <p id="enemyShips">Enemy Ships Destroyed: 0
+        </p>
+        <p id="deaths">Deaths: 0
+        </p>
+    </div>
+
+    <div class="mobileWarning" id="mobileWarning" style="display: none;">
+        <h1>You can't control this without a keyboard</h1>
+    </div>
+
+
+    <canvas id="canvas"></canvas>
+
+    <script src="game.js"></script>
+    <script>
+        var isMobile = false;
+        var visualRocks = 0;
+        var visualEnemyShips = 0;
+        var visualDeaths = 0;
+
+        function updateVisualStats() {
+            document.getElementById("rocks").innerHTML = "Rocks: " + visualRocks;
+            document.getElementById("enemyShips").innerHTML = "Enemy Ships Destroyed: " + visualEnemyShips;
+            document.getElementById("deaths").innerHTML = "Deaths: " + visualDeaths;
+        }
+    </script>
+</body>
+
+</html>
