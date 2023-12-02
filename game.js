@@ -230,7 +230,8 @@ var Asteroid = (function () {
     var create = function () {
         var obj = Object.create(def);
         obj.radius = 40;
-        obj.color = asteroidColor;
+        // Per asteroid color
+        //obj.color = asteroidColor;
         obj.pos = Vec2D.create(0, 0);
         obj.vel = Vec2D.create(0, 0);
         obj.blacklisted = false;
@@ -257,7 +258,6 @@ var Asteroid = (function () {
             this.pos.add(this.vel);
             this.angle += this.angleVel;
         },
-
         reset: function () {
             this.blacklisted = false;
         }
@@ -332,7 +332,7 @@ var Ship = (function () {
         },
 
         shoot: function () {
-            if (this.bulletDelay > 7) {
+            if (this.bulletDelay > 5) {
                 this.ref.generateShot();
                 this.bulletDelay = 0;
             }
@@ -344,7 +344,7 @@ var Ship = (function () {
 
             visualDeaths++;
             updateVisualStats();
-            saveLocalScores();
+            saveLocalData();
         },
         init: function () {
             console.log("init");
@@ -410,9 +410,9 @@ var EnemyShip1 = (function () {
         hasDied: null,
         radius: null,
         enemyRadius: null,
-        actionTimerMin: 12,
-        actionTimerMax: 200,
-        actionTimerCurrent: 200,
+        actionTimerMin: null,
+        actionTimerMax: null,
+        actionTimerCurrent: 999,
         actionTimer: 0,
         enemyType: 0,
         overrideColor: null,
@@ -433,7 +433,7 @@ var EnemyShip1 = (function () {
 
             if (this.enemyType != 2) {
                 if (this.actionTimer > this.actionTimerCurrent) {
-                    this.actionTimerCurrent = 0;
+                    this.actionTimer = 0;
                     this.actionTimerCurrent = Math.random() * (this.actionTimerMax - this.actionTimerMin) + this.actionTimerMin;
                     this.chooseRandomAction();
                 }
@@ -520,16 +520,16 @@ var EnemyShip1 = (function () {
                     break;
             }
             if (this.enemyType == 0) {
-                if (Math.random() > 0.7) {
+                if (Math.random() > 0.75) {
                     this.isMovingForward = false;
                 }
-                if (Math.random() > 0.2) {
+                if (Math.random() > 0.225) {
                     this.isRotatingLeft = false;
                 }
-                if (Math.random() > 0.2) {
+                if (Math.random() > 0.225) {
                     this.isRotatingRight = false;
                 }
-                if (Math.random() > 0.25) {
+                if (Math.random() > 0.3) {
                     this.isShooting = false;
                 }
             }
@@ -573,9 +573,8 @@ var EnemyShip1 = (function () {
             this.isShooting = false;
             this.radius = null;
             this.angle = 0;
-
             visualEnemyShips++;
-            saveLocalScores();
+            saveLocalData();
             updateVisualStats();
         },
         setenemyType: function () {
@@ -587,15 +586,16 @@ var EnemyShip1 = (function () {
                 this.overrideColor = enemyScaryOverrideColor;
             } else if (randomenemyType > 0.7) {
                 this.enemyType = 1;
-                this.actionTimerMin = 10;
-                this.actionTimerMax = 100;
+                this.actionTimerMin = 1;
+                this.actionTimerMax = 50;
                 this.overrideColor = enemyOverrideColor;
 
                 this.isMovingForward = true;
             } else {
                 this.enemyType = 0;
-                this.actionTimerMin = 15;
-                this.actionTimerMax = 250;
+                this.actionTimerMin = 5;
+                this.actionTimerMax = 75;
+                this.actionTimer = 999;
                 this.chooseRandomAction();
             }
 
@@ -638,7 +638,6 @@ var doublePI = Math.PI * 2;
 // Game state can be stopped, running, or game over
 // 0 = start/stopped, 1 = running, 2 = game over
 var gameState = 0;
-
 var ship;
 
 var enemyShipArray = [];
@@ -650,10 +649,11 @@ var bulletPool;
 var bullets;
 
 var asteroidPool;
-var asteroids;
+var asteroids = [];
 
 var hScan;
 var asteroidVelFactor = 0;
+var enemySpawnTimer = 1000 * 8;
 
 // Controls
 
@@ -698,7 +698,7 @@ window.onresize = function () {
 };
 
 // load localStorage numbers for 'rocks', 'deaths', 'enemyShips'
-function checkLocalScores() {
+function loadLocalData() {
     if (localStorage.getItem("rocks") != null) {
         visualRocks = localStorage.getItem("rocks");
     }
@@ -708,26 +708,55 @@ function checkLocalScores() {
     if (localStorage.getItem("enemyShips") != null) {
         visualEnemyShips = localStorage.getItem("enemyShips");
     }
+
+    if (localStorage.getItem("customPlayerColor") != null) {
+        playerColor = localStorage.getItem("customPlayerColor");
+    }
+    if (localStorage.getItem("customAsteroidColor") != null) {
+        asteroidColor = localStorage.getItem("customAsteroidColor");
+    }
+    if (localStorage.getItem("customEnemyColor") != null) {
+        enemyColor = localStorage.getItem("customEnemyColor");
+    }
+    if (localStorage.getItem("customEnemyColor2") != null) {
+        enemyOverrideColor = localStorage.getItem("customEnemyColor2");
+    }
+    if (localStorage.getItem("customEnemyColor3") != null) {
+        enemyScaryOverrideColor = localStorage.getItem("customEnemyColor3");
+    }
+    // log all local storage
+    console.log(localStorage);
+
     updateVisualStats();
+    updateSettingsStart();
 }
-function saveLocalScores() {
+
+function saveLocalData() {
     localStorage.setItem("rocks", visualRocks);
     localStorage.setItem("deaths", visualDeaths);
     localStorage.setItem("enemyShips", visualEnemyShips);
+
+    localStorage.setItem("customPlayerColor", playerColor);
+    localStorage.setItem("customAsteroidColor", asteroidColor);
+    localStorage.setItem("customEnemyColor", enemyColor);
+    localStorage.setItem("customEnemyColor2", enemyOverrideColor);
+    localStorage.setItem("customEnemyColor3", enemyScaryOverrideColor);
+}
+
+function hasUpdatedCustomColors() {
+    saveLocalData();
 }
 
 // Start all game logic
 function setupGame() {
-    checkLocalScores();
+    loadLocalData();
     keyboardInit();
     particleInit();
     bulletInit();
-    asteroidInit();
     shipInit();
     enemyInit();
+    asteroidInit();
 
-    // Insta start
-    //gameState = 1
     loop();
 }
 
@@ -815,7 +844,7 @@ function keyboardInit() {
 }
 
 function particleInit() {
-    particlePool = Pool.create(Particle, 750);
+    particlePool = Pool.create(Particle, 500);
     particles = [];
 }
 
@@ -826,7 +855,7 @@ function bulletInit() {
 }
 
 function asteroidInit() {
-    asteroidPool = Pool.create(Asteroid, 30);
+    asteroidPool = Pool.create(Asteroid, 25);
     asteroids = [];
 }
 
@@ -849,7 +878,7 @@ function enemyInit() {
                 }
             }
         }
-    }, 1000 * 10);
+    }, enemySpawnTimer);
 }
 
 function createNewEnemy(type) {
@@ -859,12 +888,17 @@ function createNewEnemy(type) {
     var enemyShip = EnemyShip1.create(Math.random() * screenWidth, Math.random() * screenHeight, this);
     enemyShip.init();
     enemyShipArray.push(enemyShip);
+
+    enemySpawnTimer -= 100;
+    if (enemySpawnTimer < 5000) enemySpawnTimer = 5000;
 }
 
 function loop() {
     if (gameState != 1) {
-        if (keySpace && gameState == 0) {
+        if (keySpace && gameState == 0 || isMobile) {
             gameState = 1;
+            if (isMobile)
+                ship.toggleSpectate();
         } else if (!keySpace && gameState == 0) {
             renderIntroMenu();
             getAnimationFrame(loop);
@@ -974,7 +1008,7 @@ function generateThrustParticle() {
 
     p.radius = Math.random() * 3 + 2;
     p.color = playerColor;
-    p.lifeSpan = 80;
+    p.lifeSpan = 50;
     p.pos.setXY(ship.pos.getX() + Math.cos(ship.angle) * -14, ship.pos.getY() + Math.sin(ship.angle) * -14);
     p.vel.setLength(8 / p.radius);
     p.vel.setAngle(ship.angle + (1 - Math.random() * 2) * (Math.PI / 18));
@@ -1000,7 +1034,7 @@ function generateEnemyParticle(enemy) {
             p.color = enemyScaryOverrideColor;
             break;
     }
-    p.lifeSpan = 80;
+    p.lifeSpan = 40;
     p.pos.setXY(enemy.pos.getX() + Math.cos(enemy.angle) * -14, enemy.pos.getY() + Math.sin(enemy.angle) * -14);
     p.vel.setLength(8 / p.radius);
     p.vel.setAngle(enemy.angle + (1 - Math.random() * 2) * (Math.PI / 18));
@@ -1239,7 +1273,7 @@ function generateEnemyExplosion(enemy) {
         if (!p) return;
 
         p.radius = Math.random() * 6 + 2;
-        p.lifeSpan = 80;
+        p.lifeSpan = 40;
         switch (enemy.enemyType) {
             case 0:
                 p.color = enemyColor;
@@ -1279,7 +1313,7 @@ function destroyAsteroid(asteroid) {
 
     visualRocks++;
     updateVisualStats();
-    saveLocalScores();
+    saveLocalData();
 }
 
 function generateAsteroidExplosion(asteroid) {
@@ -1377,7 +1411,7 @@ function renderAsteroids() {
 
         context.beginPath();
         context.lineWidth = (Math.random() > 0.2) ? 4 : 3;
-        context.strokeStyle = a.color;
+        context.strokeStyle = asteroidColor;
 
         var j = a.sides;
 

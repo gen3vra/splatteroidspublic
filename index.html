@@ -24,7 +24,7 @@
             font-family: "Lucida Sans Typewriter", "Lucida Console", Monaco, "Bitstream Vera Sans Mono", monospace;
             margin: 10px 10px 0;
             padding: 8px;
-            background: #161616;
+            background: #1d1d1d5a;
             position: absolute;
             z-index: 1;
         }
@@ -66,6 +66,40 @@
         #deaths {
             color: #f1b8f2;
         }
+
+        .settingsBtn {
+            background: #1e1d1d;
+            border: none;
+            color: #fbe3fb;
+            padding: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin: 0;
+        }
+
+        .settingsBtn:hover {
+            background: #2e2d2d;
+        }
+
+        .settingsPanel {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #FFF;
+            font-family: "Lucida Sans Typewriter", "Lucida Console", Monaco, "Bitstream Vera Sans Mono", monospace;
+            margin: 10px 10px 0;
+            padding: 20px;
+            background: #161616;
+            z-index: 1;
+            font-size: 2rem;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .show {
+            display: block;
+        }
     </style>
 </head>
 
@@ -75,6 +109,7 @@
         <p>Use [A][S][W][D] or [&larr;][&uarr;][&darr;][&rarr;] to MOVE</p>
         <p>Use [SPACE] or [K] to SHOOT</p>
         <p>[SHIFT] to do everything faster</p>
+        <button onclick="toggleSettingsPanel()" class="settingsBtn">Settings</button>
         <h2>Your Session Stats</h2>
         <p id="rocks">Rocks: 0
         </p>
@@ -86,6 +121,15 @@
 
     <div class="mobileWarning" id="mobileWarning" style="display: none;">
         <h1>You can't control this without a keyboard</h1>
+    </div>
+    <div class="settingsPanel" id="settingsPanel">
+        <h1>Settings</h1>
+        <p>Player Color: <input type="color" id="playerColor" value="#f1b8f2"></p>
+        <p>Enemy Color: <input type="color" id="enemyColor" value="#8896f7"></p>
+        <p>Enemy Color 2: <input type="color" id="enemyColor2" value="#f97079"></p>
+        <p>Enemy Color 3: <input type="color" id="enemyColor3" value="#FF0000"></p>
+        <p>Asteroids Color: <input type="color" id="asteroidColor" value="#f79588"></p>
+        <button onclick="toggleSettingsPanel()" class="settingsBtn">Close</button>
     </div>
 
 
@@ -111,6 +155,44 @@
             isMobile = true;
             document.getElementById("mobileWarning").style.display = "block";
         }
+
+        function toggleSettingsPanel() {
+            var settingsPanel = document.getElementById("settingsPanel");
+            if (settingsPanel.classList.contains("show")) {
+                settingsPanel.classList.remove("show");
+            } else {
+                settingsPanel.classList.add("show");
+            }
+        }
+
+        function updateSettingsStart() {
+            // Settings
+            document.getElementById("playerColor").value = playerColor;
+            document.getElementById("enemyColor").value = enemyColor;
+            document.getElementById("enemyColor2").value = enemyOverrideColor;
+            document.getElementById("enemyColor3").value = enemyScaryOverrideColor;
+            document.getElementById("asteroidColor").value = asteroidColor;
+        }
+        document.getElementById("playerColor").addEventListener("change", function () {
+            playerColor = document.getElementById("playerColor").value;
+            hasUpdatedCustomColors();
+        });
+        document.getElementById("enemyColor").addEventListener("change", function () {
+            enemyColor = document.getElementById("enemyColor").value;
+            hasUpdatedCustomColors();
+        });
+        document.getElementById("enemyColor2").addEventListener("change", function () {
+            enemyOverrideColor = document.getElementById("enemyColor2").value;
+            hasUpdatedCustomColors();
+        });
+        document.getElementById("enemyColor3").addEventListener("change", function () {
+            enemyScaryOverrideColor = document.getElementById("enemyColor3").value;
+            hasUpdatedCustomColors();
+        });
+        document.getElementById("asteroidColor").addEventListener("change", function () {
+            asteroidColor = document.getElementById("asteroidColor").value;
+            hasUpdatedCustomColors();
+        });
     </script>
 </body>
 
