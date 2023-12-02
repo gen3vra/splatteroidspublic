@@ -347,7 +347,7 @@ var Ship = (function () {
             saveLocalData();
         },
         init: function () {
-            console.log("init");
+
         },
         reset: function () {
             this.pos.setXY(screenWidth >> 1, screenHeight >> 1);
@@ -724,8 +724,6 @@ function loadLocalData() {
     if (localStorage.getItem("customEnemyColor3") != null) {
         enemyScaryOverrideColor = localStorage.getItem("customEnemyColor3");
     }
-    // log all local storage
-    console.log(localStorage);
 
     updateVisualStats();
     updateSettingsStart();
