@@ -122,7 +122,7 @@
         <h1>Splatteroids</h1>
         <p>Use [A][S][W][D] or [&larr;][&uarr;][&darr;][&rarr;] to MOVE</p>
         <p>Use [SPACE] or [K] to SHOOT</p>
-        <p>[SHIFT] to do everything faster</p>
+        <p>[SHIFT] to do things faster</p>
         <button onclick="toggleSettingsPanel()" class="settingsBtn">Settings</button>
         <button onclick="toggleFullScreen()" class="settingsBtn">Fullscreen</button>
         <h2>Your Session Stats</h2>
@@ -193,10 +193,7 @@
             }
         }
 
-        // check if fullscreen with listener
         document.addEventListener("fullscreenchange", function () {
-            console.log("test");
-            console.log(document.fullscreenElement);
             if (document.fullscreenElement) {
                 document.getElementById("miniInfo").style.display = "block";
                 document.getElementById("info").style.display = "none";

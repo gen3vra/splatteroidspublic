@@ -656,7 +656,6 @@ var asteroidVelFactor = 0;
 var enemySpawnTimer = 1000 * 8;
 
 // Controls
-
 var keyLeft = false;
 var keyUp = false;
 var keyRight = false;
@@ -666,15 +665,14 @@ var keyShift = false;
 var keySpectate = false;
 var globalKeyToggleFrameLock = false;
 
-window.getAnimationFrame =
+window.getAnimationFrame = function (callback) {
     window.requestAnimationFrame ||
-    window.webkitRequestAnimationFrame ||
-    window.mozRequestAnimationFrame ||
-    window.oRequestAnimationFrame ||
-    window.msRequestAnimationFrame ||
-    function (callback) {
-        window.setTimeout(callback, 16.6);
-    };
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.oRequestAnimationFrame ||
+        window.msRequestAnimationFrame;
+    window.setTimeout(callback, 1);
+}
 
 window.onload = function () {
     canvas = document.getElementById('canvas');
